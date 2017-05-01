@@ -35,6 +35,9 @@ shinyServer(function(input, output) {
              gridText, cex = min(3,max(0.5,(15/gridDims[1])/sqrt(nchar(gridText)))));
       }
     }
+    mtext(1, 1, cex=0.71,
+          text = "http://bingo.gringene.org [source: https://github.org/gringer/conference-bingo]");
+    box(which="figure");
   }
    
   output$bingoGrid <- renderPlot({
@@ -48,7 +51,6 @@ shinyServer(function(input, output) {
     gridData$Digest <- substring(digest(c(input$freeWord, wordList), "sha512"),1,12);
     ## draw grid
     drawGrid();
-    box(which="figure");
   }, width=600, height=600)
   
   output$bingoBoard.pdf <- downloadHandler(
