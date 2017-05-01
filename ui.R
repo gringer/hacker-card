@@ -22,7 +22,7 @@ shinyUI(fluidPage(
       
     ),
     mainPanel(
-       plotOutput("bingoGrid")
+       plotOutput("bingoGrid", inline = TRUE)
     )
   )
 ))

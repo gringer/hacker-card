@@ -49,7 +49,7 @@ shinyServer(function(input, output) {
     ## draw grid
     drawGrid();
     box(which="figure");
-  })
+  }, width=600, height=600)
   
   output$bingoBoard.pdf <- downloadHandler(
     filename = function(){
