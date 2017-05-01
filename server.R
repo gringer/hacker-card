@@ -36,7 +36,7 @@ shinyServer(function(input, output) {
       }
     }
     mtext(1, 1, cex=0.71,
-          text = "http://bingo.gringene.org [source: https://github.org/gringer/conference-bingo]");
+          text = "http://bingo.gringene.org [source: https://github.com/gringer/conference-bingo]");
     box(which="figure");
   }
    
