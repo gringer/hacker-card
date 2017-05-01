@@ -67,6 +67,21 @@ shinyServer(function(input, output) {
     contentType = "text/pdf"
   );
   
+  output$bingoBoard.png <- downloadHandler(
+    filename = function(){
+      fName <- sprintf("bingo_%s_%s_%s.png",input$style,
+                       gsub(" ","-",input$cName),
+                       format(Sys.Date(),"%Y-%b-%d"));
+      cat("Writing to file: ",fName, "\n");
+      return(fName);
+    },
+    content = function(con){
+      png(con, width=1024, height=1024, pointsize = 24);
+      drawGrid();
+      dev.off();
+    },
+    contentType = "image/png"
+  );
   
   
 })
