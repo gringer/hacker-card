@@ -78,7 +78,7 @@ shinyServer(function(input, output) {
       return(fName);
     },
     content = function(con){
-      png(con, width=1024, height=1024, pointsize = 24);
+      png(con, width=1024, height=1024, pointsize = 18);
       drawGrid();
       dev.off();
     },
