@@ -10,32 +10,56 @@ shinyServer(function(input, output) {
   gridData$Labels <- NULL;
   gridData$Dims <- NULL;
 
-  drawPlot <- function(){
-    gridDims <- gridData$Dims;
-    par(mar=c(4,4,4,4));
-    plot(NA, xlim=c(0,1), ylim=c(0,1), axes=FALSE,
-         main="Hacker Card", 
-         xlab="", ylab="", cex.main=2);
-    rect(0, 0, 1, 1, lwd=3);
-    for(xp in (1:gridDims[1]-1)){
-      for(yp in (1:gridDims[2]- 1)){
-        rect(xp/gridDims[1], yp/gridDims[2], 
-             (xp+1)/gridDims[1], (yp+1)/gridDims[2]);
-      }
+  output$myImage <- renderImage({
+    if(is.null(input$picBase)){
+      return();
     }
-    text(0,0,"Name");
-    mtext(1, 1, cex=0.71,
-          text = "http://card.gringene.org [source: https://github.com/gringer/hacker-card]");
-    box(which="figure");
-  }
-   
+    # A temp file to save the output.
+    # This file will be removed later by renderImage
+    outdir <- tempdir();
+    infile <- tempfile(fileext='.tex');
+    outfile <- tempfile(fileext='.png');
+    infileBase <- sub("\\.tex$","",infile);
+    outfileBase <- sub("\\.png$","",outfile);
+    tikzString <- paste(input$picBase,"female","shirt=red",
+                        "mirrored",sep=",");
+    cat("\\documentclass{article}",
+        "\\usepackage[paperwidth=2cm,paperheight=2cm,margin=0cm]{geometry}",
+        "\\usepackage{tikzpeople}",
+        "\\begin{document}",
+        "\\begin{center}",
+        paste0("\\tikz{\\node[",tikzString,
+               ",minimum height=\\textheight-6pt]{}}"),
+        "\\end{center}",
+        "\\end{document}",
+        file=infile, sep="\n");
+    system(command = paste("pdflatex","-output-directory",outdir,infile), 
+           ignore.stdout = TRUE);
+    system(command = paste("pdftoppm -png",
+                           "-singlefile", paste0(infileBase,".pdf"),
+                           "-scale-to-x",250,
+                           "-scale-to-y",250,outfileBase));
+    unlink(paste0(infileBase,".tex"));
+    unlink(paste0(infileBase,".aux"));
+    unlink(paste0(infileBase,".pdf"));
+    
+    # Return a list containing the filename
+    list(src = outfile,
+         contentType = 'image/png',
+         width = 250,
+         height = 250,
+         alt = "This is alternate text")
+  }, deleteFile = TRUE)
+  
+     
   output$cardText <- renderUI({
     list(
       tags$div(style="border: 1px solid; padding: 1em",
-        tags$h1(style="text-align:center", "Hacker Card"),
+        tags$h1(style="text-align:center", "GovHacker Card"),
         tags$h2("Name:"), input$cName,
         tags$h2("Day job:"), input$dayJob,
         tags$h2("Hacker skill:"), input$skills,
+        imageOutput("myImage"),
         tags$p("Make your own at ",
                tags$a(href="http://card.gringene.org",
                "card.gringene.org"))
