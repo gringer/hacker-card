@@ -23,7 +23,7 @@ shinyUI(fluidPage(
       
     ),
     mainPanel(
-       htmlOutput("cardText", inline = TRUE)
+       imageOutput("myImage", inline = TRUE)
     )
   )
 ))

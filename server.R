@@ -21,24 +21,77 @@ shinyServer(function(input, output) {
     outfile <- tempfile(fileext='.png');
     infileBase <- sub("\\.tex$","",infile);
     outfileBase <- sub("\\.png$","",outfile);
-    tikzString <- paste(input$picBase,"female","shirt=red",
-                        "mirrored",sep=",");
-    cat("\\documentclass{article}",
-        "\\usepackage[paperwidth=2cm,paperheight=2cm,margin=0cm]{geometry}",
-        "\\usepackage{tikzpeople}",
-        "\\begin{document}",
-        "\\begin{center}",
-        paste0("\\tikz{\\node[",tikzString,
-               ",minimum height=\\textheight-6pt]{}}"),
-        "\\end{center}",
-        "\\end{document}",
-        file=infile, sep="\n");
-    system(command = paste("pdflatex","-output-directory",outdir,infile), 
+    tikzString <- paste(input$picBase,"female","shirt=red",sep=",");
+    personName <- ifelse(input$cName=="",
+                         "Audrey Hacker",input$cName);
+    personJob <- ifelse(input$dayJob=="",
+                        "Conflict Resolution Negotiator",input$dayJob);
+    personSkills <- gsub("\n","\\\\\n",input$skills);
+    cat(
+"     \\documentclass[11pt,a4paper]{memoir}
+      
+      \\setstocksize{55mm}{85mm} % UK Stock size
+      \\setpagecc{55mm}{85mm}{*}
+      \\settypeblocksize{45mm}{75mm}{*}
+      \\setulmargins{5mm}{*}{*}
+      \\setlrmargins{5mm}{*}{*}
+      \\usepackage{xcolor}
+      
+      \\setheadfoot{0.1pt}{0.1pt}
+      \\setheaderspaces{1pt}{*}{*}
+
+      \\checkandfixthelayout[fixed]
+      
+      \\pagestyle{empty}
+      
+      \\usepackage{pstricks}
+      \\usepackage{xcolor}
+      \\usepackage{tikzpeople}
+
+      \\begin{document}
+      \\begin{Spacing}{0.75}%
+      \\noindent",
+sprintf("\\textbf{%s}\\\\",personName),
+      sprintf("\\tiny %s\\\\", 
+              "GovHacker"),"
+      \\rule{74mm}{.3mm}\\\\
+      \\begin{minipage}[t]{20mm}
+      \\vspace{-0mm}%",
+      paste0("\\tikz{\\node[",tikzString,
+             ",minimum height=28mm]{}}"),
+"     \\end{minipage}
+      \\hspace{1mm}
+      \\begin{minipage}[t]{47mm}
+      \\vspace{-0mm}%
+      \\begin{flushleft}
+      {\\scriptsize
+        \\begin{Spacing}{1}%",
+        sprintf("\\textbf{%s}\\\\",personJob),
+        sprintf("\\hspace{5mm}%s\\vspace{2mm}\\\\",personSkills),"
+        \\end{Spacing}
+      }
+      {\\tiny
+        \\begin{tabular}{rl}
+        {\\color{gray}web} & https://fqdn/\\\\
+        {\\color{gray}email} & helena@univ.edu\\\\
+        {\\color{gray}email} & hxr42@gmail.com\\\\
+        {\\color{gray}mobile} & +1 123 456 7890\\\\
+        \\end{tabular}
+        \\vspace*{2mm}
+      }
+      \\end{flushleft}
+      \\end{minipage}
+      \\end{Spacing}
+      \\end{document}
+",
+      file=infile, sep="\n");
+    system(command = paste("pdflatex","-output-directory",
+                           outdir,infile,"-interaction nonstopmode"),
            ignore.stdout = TRUE);
     system(command = paste("pdftoppm -png",
                            "-singlefile", paste0(infileBase,".pdf"),
-                           "-scale-to-x",250,
-                           "-scale-to-y",250,outfileBase));
+                           "-scale-to-x",850,
+                           "-scale-to-y",550,outfileBase));
     unlink(paste0(infileBase,".tex"));
     unlink(paste0(infileBase,".aux"));
     unlink(paste0(infileBase,".pdf"));
@@ -46,8 +99,8 @@ shinyServer(function(input, output) {
     # Return a list containing the filename
     list(src = outfile,
          contentType = 'image/png',
-         width = 250,
-         height = 250,
+         width = 425,
+         height = 275,
          alt = "This is alternate text")
   }, deleteFile = TRUE)
   
