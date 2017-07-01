@@ -66,16 +66,21 @@ sprintf("\\textbf{%s}\\\\",personName),
       \\begin{flushleft}
       {\\scriptsize
         \\begin{Spacing}{1}%",
-        sprintf("\\textbf{%s}\\\\",personJob),
-        sprintf("\\hspace{5mm}%s\\vspace{2mm}\\\\",personSkills),"
+        sprintf("\\textbf{%s}\\\\",personJob),"
         \\end{Spacing}
       }
-      {\\tiny
+      {\\scriptsize
+        \\begin{Spacing}{1}%
+        \\hspace{5mm} Skills
+        \\end{Spacing}
+      }
+      {\\tiny",
+        sprintf("\\hspace{5mm}%s\\vspace{2mm}\\\\",personSkills),"
         \\begin{tabular}{rl}
-        {\\color{gray}web} & https://fqdn/\\\\
-        {\\color{gray}email} & helena@univ.edu\\\\
-        {\\color{gray}email} & hxr42@gmail.com\\\\
-        {\\color{gray}mobile} & +1 123 456 7890\\\\
+        {\\color{gray}Something} & https://fqdn/\\\\
+        {\\color{gray}Something else} & helena@univ.edu\\\\
+        {\\color{gray}Another thing} & hxr42@gmail.com\\\\
+        {\\color{gray}And finally} & +1 123 456 7890\\\\
         \\end{tabular}
         \\vspace*{2mm}
       }
@@ -94,7 +99,9 @@ sprintf("\\textbf{%s}\\\\",personName),
                            "-scale-to-y",550,outfileBase));
     unlink(paste0(infileBase,".tex"));
     unlink(paste0(infileBase,".aux"));
+    unlink(paste0(infileBase,".log"));
     unlink(paste0(infileBase,".pdf"));
+    gridData$fileName <- outfile;
     
     # Return a list containing the filename
     list(src = outfile,
@@ -102,7 +109,7 @@ sprintf("\\textbf{%s}\\\\",personName),
          width = 425,
          height = 275,
          alt = "This is alternate text")
-  }, deleteFile = TRUE)
+  }, deleteFile = FALSE)
   
      
   output$cardText <- renderUI({
