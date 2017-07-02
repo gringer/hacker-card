@@ -21,11 +21,11 @@ shinyServer(function(input, output) {
     outfile <- tempfile(fileext='.png');
     infileBase <- sub("\\.tex$","",infile);
     outfileBase <- sub("\\.png$","",outfile);
-    tikzString <- paste(input$picBase,"female","shirt=red",sep=",");
+    tikzString <- paste(input$picBase,"female","monitor","sword","shirt=red",sep=",");
     personName <- ifelse(input$cName=="",
                          "Audrey Hacker",input$cName);
     personJob <- ifelse(input$dayJob=="",
-                        "Conflict Resolution Negotiator",input$dayJob);
+                        "Conflict Negotiator",input$dayJob);
     personSkills <- gsub("\n","\\\\\n",input$skills);
     cat(
 "     \\documentclass[11pt,a4paper]{memoir}
@@ -36,7 +36,8 @@ shinyServer(function(input, output) {
       \\setulmargins{5mm}{*}{*}
       \\setlrmargins{5mm}{*}{*}
       \\usepackage{xcolor}
-      
+
+      \\nonstopmode
       \\setheadfoot{0.1pt}{0.1pt}
       \\setheaderspaces{1pt}{*}{*}
 
@@ -47,42 +48,34 @@ shinyServer(function(input, output) {
       \\usepackage{pstricks}
       \\usepackage{xcolor}
       \\usepackage{tikzpeople}
+      \\usepackage{tabularx}
+
+\\newcolumntype{L}{>{\\arraybackslash}p{3.5cm}}
 
       \\begin{document}
-      \\begin{Spacing}{0.75}%
       \\noindent",
 sprintf("\\textbf{%s}\\\\",personName),
       sprintf("\\tiny %s\\\\", 
               "GovHacker"),"
       \\rule{74mm}{.3mm}\\\\
       \\begin{minipage}[t]{20mm}
-      \\vspace{-0mm}%",
+      \\vspace{2mm}%",
       paste0("\\tikz{\\node[",tikzString,
-             ",minimum height=28mm]{}}"),
+             ",minimum height=25mm]{}}"),
 "     \\end{minipage}
       \\hspace{1mm}
       \\begin{minipage}[t]{47mm}
       \\vspace{-0mm}%
       \\begin{flushleft}
-      {\\scriptsize
-        \\begin{Spacing}{1}%",
-        sprintf("\\textbf{%s}\\\\",personJob),"
-        \\end{Spacing}
-      }
-      {\\scriptsize
-        \\begin{Spacing}{1}%
-        \\hspace{5mm} Skills
-        \\end{Spacing}
-      }
-      {\\tiny",
-        sprintf("\\hspace{5mm}%s\\vspace{2mm}\\\\",personSkills),"
-        \\begin{tabular}{rl}
-        {\\color{gray}Something} & https://fqdn/\\\\
-        {\\color{gray}Something else} & helena@univ.edu\\\\
-        {\\color{gray}Another thing} & hxr42@gmail.com\\\\
-        {\\color{gray}And finally} & +1 123 456 7890\\\\
-        \\end{tabular}
+      {
+       \\
+       \\begin{tabular}{lL}",
+        sprintf("{\\color{gray}Day Job} & %s\\\\",personJob),
+        "\\rule{0pt}{0.5em}\\\\",
+        sprintf("\\color{gray}Hacker Skills} & \\multicolumn{1}{m{3.5cm}}{%s}\\\\",personSkills),"
+        
         \\vspace*{2mm}
+        \\end{tabular}
       }
       \\end{flushleft}
       \\end{minipage}
@@ -91,7 +84,7 @@ sprintf("\\textbf{%s}\\\\",personName),
 ",
       file=infile, sep="\n");
     system(command = paste("pdflatex","-output-directory",
-                           outdir,infile,"-interaction nonstopmode"),
+                           outdir,infile,"-interaction batchmode"),
            ignore.stdout = TRUE);
     system(command = paste("pdftoppm -png",
                            "-singlefile", paste0(infileBase,".pdf"),
