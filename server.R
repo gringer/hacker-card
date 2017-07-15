@@ -120,7 +120,7 @@ shinyServer(function(input, output) {
          contentType = 'image/png',
          width = 425,
          height = 275,
-         alt = "This is alternate text")
+         alt = "This text appears if the image can't be displayed")
   }, deleteFile = TRUE)
   
      
