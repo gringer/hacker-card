@@ -1,7 +1,6 @@
 library(shiny)
 
 shinyUI(fluidPage(
-  titlePanel("GovHacker Card"),
   sidebarLayout(
     sidebarPanel(
       fluidRow(column(6,textInput("cName","Name", 
@@ -31,6 +30,11 @@ shinyUI(fluidPage(
       
     ),
     mainPanel(
+      titlePanel("GovHacker Card"),       
+       tags$a(href="https://github.com/gringer/hacker-card",
+              tags$img(style="position: absolute; top: 0; right: 0; border: 0;",
+                  alt="Fork me on GitHub",
+                  src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png")),
        imageOutput("myImage", inline = TRUE)
     )
   )
