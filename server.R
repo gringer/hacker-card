@@ -11,25 +11,22 @@ shinyServer(function(input, output) {
     outdir <- tempdir();
     infileBase <- sub("\\.tex$","",infile);
     outfileBase <- sub("\\.(png|pdf)$","",outfile);
+    skill <- debounce(reactive({input$skill}), 2000);
     faceOptions <- debounce(reactive({input$faceOptions}), 500);
     cName <- debounce(reactive({input$cName}), 500);
     dayJob <- debounce(reactive({input$dayJob}), 500);
-    skill <- debounce(reactive({input$skill}), 500);
     optionString <- c(faceOptions(),"female");
     if("male" %in% optionString){
       optionString <- setdiff(optionString, c("male", "female"));
     }
-    print(optionString);
     tikzString <- sub(",$","",paste(input$picBase,optionString,sep=",",
                                     collapse=","));
-    print(tikzString);
     personName <- ifelse(cName()=="",
                          "Audrey Hacker",cName());
     personJob <- ifelse(dayJob()=="",
                         "Conflict Negotiator",
                         dayJob());
     personSkill <- skill();
-    print(personSkill);
     personName <- sub("[%\\].*$","",personName);
     personJob <- sub("[%\\].*$","",personJob);
     personSkill <- sub("[%\\].*$","",personSkill);
