@@ -17,6 +17,8 @@ shinyUI(fluidPage(
                            "physician", "pilot", "police", "priest",
                            "sailor", "santa", "surgeon"))
                )),
+      tags$a(href="https://www.meetup.com/Wellington-R-Users-Group-WRUG/events/243964046/",
+             actionButton("visitButton", label = "WRUG Meetup Page")),
       checkboxGroupInput("faceOptions","Options",
                          choices = c("evil","good","male","mirrored",
                                      "monitor","saturated","shield",
